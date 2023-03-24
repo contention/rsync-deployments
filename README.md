@@ -20,7 +20,7 @@ This action requires six inputs:
 
 4. `HOST` for the server user, eg: `myserver.com`
 
-5. `LOCALPATH` for the local path to sync, eg: `/src`
+5. `LOCALPATH` for the local path to sync, eg: `/dist`
 
 5. `REMOTEPATH` for the remote path to sync, eg: `/srv/myapp/public/htdocs/`
 
@@ -42,7 +42,7 @@ jobs:
       - uses: contention/rsync-deployments@v2.0.0
         with:
           FLAGS: -avzr --delete
-          EXCLUDES: --exclude .htaccess
+          EXCLUDES: --exclude .htaccess --exclude /uploads/
           USER deploybot
           HOST: myserver.com
           LOCALPATH: /dist
