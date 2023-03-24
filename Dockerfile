@@ -1,12 +1,4 @@
-FROM debian:9.5-slim
-
-
-# Update
-RUN apt-get update
-
-
-# Install packages
-RUN apt-get -yq install rsync openssh-client
+FROM drinternet/rsync:v1.4.3
 
 
 # Label
