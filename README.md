@@ -16,11 +16,11 @@ This action requires six inputs:
 
 2. `EXCLUDES` for any `--exclude` flags and directory pairs, eg: `--exclude .htaccess --exclude /uploads/`. Use `""` if none required.
 
-3. `USER` for the deployment target, and should be in the format: `deploybot`
+3. `USER` for the server user, eg: `deploybot`
 
-4. `HOST` for the server user, eg: `myserver.com`
+4. `HOST` for the deployment target, eg: `myserver.com`
 
-5. `LOCALPATH` for the local path to sync, eg: `/dist`
+5. `LOCALPATH` for the local path to sync, eg: `/dist/`
 
 5. `REMOTEPATH` for the remote path to sync, eg: `/srv/myapp/public/htdocs/`
 
@@ -45,9 +45,8 @@ jobs:
           EXCLUDES: --exclude .htaccess --exclude /uploads/
           USER deploybot
           HOST: myserver.com
-          LOCALPATH: /dist
-          DEST: /srv/myapp/public/htdocs/
-        env:
+          LOCALPATH: /dist/
+          REMOTEPATH: /srv/myapp/public/htdocs/
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
 
 ```
