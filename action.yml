@@ -1,0 +1,31 @@
+name: 'rsync deployments'
+description: 'Quick and simple method of deploying code to a webserver via rsync over ssh'
+author: 'Contention'
+inputs:
+  flags:
+    description: 'Initial/required rsync flags'
+    required: true
+  excludes:
+    description: 'Exclude flags and directory pairs'
+    required: true
+  user:
+    description: 'The server user'
+    required: true
+  host:
+    description: 'The deployment target'
+    required: true
+  localpath:
+    description: 'The local path to sync'
+    required: true
+  remotepath:
+    description: 'The remote path to sync'
+    required: true
+  deploy_key:
+    description: 'The private key'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'truck'  
+  color: 'yellow'

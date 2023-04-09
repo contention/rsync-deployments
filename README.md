@@ -1,40 +1,56 @@
 # rsync deployments
 
-This GitHub Action deploys *everything* in `GITHUB_WORKSPACE` to a folder on a server via rsync over ssh. 
+This GitHub Action deploys files in `GITHUB_WORKSPACE` to a folder on a server via rsync over ssh. 
 
 This action would usually follow a build/test action which leaves deployable code in `GITHUB_WORKSPACE`.
 
-# Required SECRETs
+# Required secrets
 
 This action needs a `DEPLOY_KEY` secret variable. This should be the private key part of an ssh key pair. The public key part should be added to the authorized_keys file on the server that receives the deployment.
 
-# Required ARGs
+# Required inputs
 
-This action can receive three `ARG`s:
+This action requires six inputs:
 
-1. The first is for any initial/required rsync flags, eg: `-avzr --delete`
+1. `FLAGS` for any initial/required rsync flags, eg: `-avzr --delete`
 
-2. The second is for any `--exclude` flags and directory pairs, eg: `--exclude .htaccess --exclude /uploads/`. Use "" if none required.
+2. `EXCLUDES` for any `--exclude` flags and directory pairs, eg: `--exclude .htaccess --exclude /uploads/`. Use `""` if none required.
 
-3. The third is for the deployment target, and should be in the format: `[USER]@[HOST]:[PATH]`
+3. `USER` for the server user, eg: `deploybot`
+
+4. `HOST` for the deployment target, eg: `myserver.com`
+
+5. `LOCALPATH` for the local path to sync, eg: `/dist/`
+
+5. `REMOTEPATH` for the remote path to sync, eg: `/srv/myapp/public/htdocs/`
 
 # Example usage
 
 ```
-workflow "All pushes" {
-  on = "push"
-  resolves = ["Deploy to Staging"]
-}
+name: Deploy to production
 
-action "Deploy to Staging" {
-  uses = "contention/action-rsync-deploy@master"
-  secrets = ["DEPLOY_KEY"]
-  args = ["-avzr --delete", "--exclude .htaccess --exclude /uploads/", "user@server.com:/srv/myapp/public/htdocs/"]
-} 
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: contention/rsync-deployments@v2.0.0
+        with:
+          FLAGS: -avzr --delete
+          EXCLUDES: --exclude .htaccess --exclude /uploads/
+          USER deploybot
+          HOST: myserver.com
+          LOCALPATH: /dist/
+          REMOTEPATH: /srv/myapp/public/htdocs/
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
 ```
 
-## Disclaimer
+## REMINDER! 
 
-If you're using GitHub Actions, you'll probably already know that it's still in limited public beta, and GitHub advise against using Actions in production. 
-
-So, check your keys. Check your deployment paths. And use at your own risk.
+Check your keys. Check your deployment paths. Check your flags. And use at your own risk.
